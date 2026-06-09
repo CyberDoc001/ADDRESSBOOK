@@ -1,0 +1,97 @@
+{% extends 'contacts/base.html' %}
+{% block title %}All Contacts — AddressBook{% endblock %}
+{% block nav_all %}active{% endblock %}
+{% block nav_fav %}{% if show_favorites %}active{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">
+      {% if show_favorites %}⭐ Favorites
+      {% elif query %}Results for "{{ query }}"
+      {% elif current_group %}Group Contacts
+      {% else %}All Contacts{% endif %}
+    </h1>
+    <p class="page-subtitle">{{ total }} contact{{ total|pluralize }} found</p>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <select class="filter-select" onchange="applySort(this.value)">
+      <option value="name" {% if sort == 'name' %}selected{% endif %}>Sort: A–Z</option>
+      <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Sort: Recent</option>
+      <option value="company" {% if sort == 'company' %}selected{% endif %}>Sort: Company</option>
+    </select>
+  </div>
+</div>
+
+<!-- FILTER CHIPS -->
+<div class="filters-bar">
+  <a href="{% url 'contact_list' %}" class="filter-chip {% if not current_group and not current_relationship and not show_favorites %}active{% endif %}">
+    All
+  </a>
+  <a href="{% url 'contact_list' %}?favorites=1" class="filter-chip {% if show_favorites %}active{% endif %}">
+    ⭐ Favorites
+  </a>
+  {% for group in groups %}
+  <a href="{% url 'contact_list' %}?group={{ group.id }}" class="filter-chip {% if current_group == group.id|stringformat:'s' %}active{% endif %}"
+     style="{% if current_group == group.id|stringformat:'s' %}border-color:{{ group.color }}40;color:{{ group.color }}{% endif %}">
+    <span style="width:8px;height:8px;border-radius:50%;background:{{ group.color }};display:inline-block"></span>
+    {{ group.name }}
+  </a>
+  {% endfor %}
+</div>
+
+{% if contacts %}
+  {% if sort == 'name' and not query %}
+    {% for letter, group_contacts in alpha_groups.items %}
+    <div class="alpha-section">
+      <div class="alpha-letter">{{ letter }}</div>
+      <div class="contacts-grid">
+        {% for contact in group_contacts %}
+        {% include 'contacts/_card.html' %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="contacts-grid">
+      {% for contact in contacts %}
+      {% include 'contacts/_card.html' %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">📭</div>
+  <div class="empty-title">No contacts found</div>
+  <div class="empty-desc">
+    {% if query %}No results for "{{ query }}". Try a different search.
+    {% else %}Your address book is empty. Add your first contact to get started.{% endif %}
+  </div>
+  <a href="{% url 'contact_create' %}" class="btn btn-primary" style="margin-top:20px">✦ Add Contact</a>
+</div>
+{% endif %}
+
+<script>
+function applySort(val) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('sort', val);
+  window.location.href = url.toString();
+}
+
+// Favorite toggle via AJAX
+document.querySelectorAll('.fav-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const id = btn.dataset.id;
+    const resp = await fetch(`/contact/${id}/favorite/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+    });
+    const data = await resp.json();
+    btn.classList.toggle('active', data.is_favorite);
+    btn.textContent = data.is_favorite ? '⭐' : '☆';
+  });
+});
+</script>
+{% endblock %}

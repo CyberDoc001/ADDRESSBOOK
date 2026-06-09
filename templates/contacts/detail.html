@@ -1,0 +1,187 @@
+{% extends 'contacts/base.html' %}
+{% block title %}{{ contact.get_full_name }} — AddressBook{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="{% url 'contact_list' %}" class="btn btn-ghost btn-sm">← Back</a>
+    <h1 class="page-title" style="font-size:20px">{{ contact.get_full_name }}</h1>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a href="{% url 'contact_edit' contact.pk %}" class="btn btn-ghost btn-sm">✏️ Edit</a>
+    <a href="{% url 'contact_delete' contact.pk %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+  </div>
+</div>
+
+<div class="detail-layout">
+  <!-- LEFT SIDEBAR -->
+  <div class="detail-sidebar">
+    <div class="detail-avatar-wrap">
+      {% if contact.photo %}
+        <img src="{{ contact.photo.url }}" class="avatar avatar-lg" alt="{{ contact.get_full_name }}">
+      {% else %}
+        <div class="avatar-initials avatar-lg
+          {% if contact.pk|divisibleby:6 %}av-pink
+          {% elif contact.pk|divisibleby:5 %}av-blue
+          {% elif contact.pk|divisibleby:4 %}av-amber
+          {% elif contact.pk|divisibleby:3 %}av-red
+          {% elif contact.pk|divisibleby:2 %}av-green
+          {% else %}av-purple{% endif %}">
+          {{ contact.get_initials }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="detail-name">{{ contact.get_full_name }}</div>
+    {% if contact.job_title or contact.company %}
+    <div class="detail-role">
+      {% if contact.job_title %}{{ contact.job_title }}{% endif %}
+      {% if contact.job_title and contact.company %} · {% endif %}
+      {% if contact.company %}{{ contact.company }}{% endif %}
+    </div>
+    {% endif %}
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px">
+      {% if contact.relationship %}
+      <span class="badge badge-{{ contact.relationship }}">{{ contact.get_relationship_display }}</span>
+      {% endif %}
+      {% if contact.group %}
+      <span class="badge badge-group" style="border-color:{{ contact.group.color }}40;color:{{ contact.group.color }}">
+        {{ contact.group.name }}
+      </span>
+      {% endif %}
+    </div>
+
+    <div class="detail-actions">
+      <a href="{% url 'contact_edit' contact.pk %}" class="btn btn-ghost btn-sm">✏️ Edit</a>
+      <form method="post" action="{% url 'toggle_favorite' contact.pk %}" style="flex:1">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm {% if contact.is_favorite %}btn-ghost{% else %}btn-ghost{% endif %}" style="width:100%;justify-content:center">
+          {% if contact.is_favorite %}⭐ Saved{% else %}☆ Save{% endif %}
+        </button>
+      </form>
+    </div>
+
+    <div style="margin-top:20px;font-size:11px;color:var(--text3);text-align:center">
+      Added {{ contact.created_at|date:"M d, Y" }}<br>
+      Updated {{ contact.updated_at|date:"M d, Y" }}
+    </div>
+  </div>
+
+  <!-- RIGHT DETAIL CARDS -->
+  <div class="detail-cards">
+    <!-- Contact Info -->
+    {% if contact.phone or contact.secondary_phone or contact.email or contact.website %}
+    <div class="info-card">
+      <div class="info-card-header">📞 Contact Information</div>
+      {% if contact.phone %}
+      <div class="info-row">
+        <span class="info-icon">📞</span>
+        <div>
+          <div class="info-label">Primary Phone</div>
+          <div class="info-value"><a href="tel:{{ contact.phone }}">{{ contact.phone }}</a></div>
+        </div>
+      </div>
+      {% endif %}
+      {% if contact.secondary_phone %}
+      <div class="info-row">
+        <span class="info-icon">📱</span>
+        <div>
+          <div class="info-label">Secondary Phone</div>
+          <div class="info-value"><a href="tel:{{ contact.secondary_phone }}">{{ contact.secondary_phone }}</a></div>
+        </div>
+      </div>
+      {% endif %}
+      {% if contact.email %}
+      <div class="info-row">
+        <span class="info-icon">✉️</span>
+        <div>
+          <div class="info-label">Email</div>
+          <div class="info-value"><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></div>
+        </div>
+      </div>
+      {% endif %}
+      {% if contact.website %}
+      <div class="info-row">
+        <span class="info-icon">🌐</span>
+        <div>
+          <div class="info-label">Website</div>
+          <div class="info-value"><a href="{{ contact.website }}" target="_blank">{{ contact.website }}</a></div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Address -->
+    {% if contact.address or contact.city or contact.country %}
+    <div class="info-card">
+      <div class="info-card-header">📍 Address</div>
+      <div class="info-row">
+        <span class="info-icon">🏠</span>
+        <div>
+          <div class="info-label">Location</div>
+          <div class="info-value">
+            {% if contact.address %}{{ contact.address }}<br>{% endif %}
+            {% if contact.city %}{{ contact.city }}{% if contact.state %}, {{ contact.state }}{% endif %}{% if contact.zip_code %} {{ contact.zip_code }}{% endif %}<br>{% endif %}
+            {% if contact.country %}{{ contact.country }}{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Work -->
+    {% if contact.company or contact.job_title %}
+    <div class="info-card">
+      <div class="info-card-header">💼 Work</div>
+      {% if contact.company %}
+      <div class="info-row">
+        <span class="info-icon">🏢</span>
+        <div>
+          <div class="info-label">Company</div>
+          <div class="info-value">{{ contact.company }}</div>
+        </div>
+      </div>
+      {% endif %}
+      {% if contact.job_title %}
+      <div class="info-row">
+        <span class="info-icon">🎯</span>
+        <div>
+          <div class="info-label">Job Title</div>
+          <div class="info-value">{{ contact.job_title }}</div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Personal -->
+    {% if contact.birthday %}
+    <div class="info-card">
+      <div class="info-card-header">🎂 Personal</div>
+      <div class="info-row">
+        <span class="info-icon">🎂</span>
+        <div>
+          <div class="info-label">Birthday</div>
+          <div class="info-value">{{ contact.birthday|date:"F d, Y" }}</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Notes -->
+    {% if contact.notes %}
+    <div class="info-card">
+      <div class="info-card-header">📝 Notes</div>
+      <div class="info-row">
+        <span class="info-icon">💬</span>
+        <div>
+          <div class="info-value" style="white-space:pre-line">{{ contact.notes }}</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

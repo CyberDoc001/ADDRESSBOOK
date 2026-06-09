@@ -1,0 +1,19 @@
+{% extends 'contacts/base.html' %}
+
+{% block title %}Register — AddressBook{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <h1>Register</h1>
+  <p class="auth-subtitle">Create a new AddressBook account and start managing your contacts.</p>
+  <form method="post" class="auth-form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="field-row">{{ form.username.label_tag }}{{ form.username }}</div>
+    <div class="field-row">{{ form.password1.label_tag }}{{ form.password1 }}</div>
+    <div class="field-row">{{ form.password2.label_tag }}{{ form.password2 }}</div>
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+  <p class="auth-footer">Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+</div>
+{% endblock %}

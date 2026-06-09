@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}AddressBook{% endblock %}</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📒</text></svg>">
+</head>
+<body>
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="{% url 'contact_list' %}" class="logo-mark">
+        <div class="logo-icon">📒</div>
+        <div>
+          <div class="logo-text">AddressBook</div>
+          <div class="logo-sub">Contact Manager</div>
+        </div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="{% url 'contact_list' %}" class="nav-link {% block nav_all %}{% endblock %}">
+        <span class="nav-icon">👥</span> All Contacts
+      </a>
+      <a href="{% url 'contact_list' %}?favorites=1" class="nav-link {% block nav_fav %}{% endblock %}">
+        <span class="nav-icon">⭐</span> Favorites
+      </a>
+      <a href="{% url 'contact_list' %}?relationship=friend" class="nav-link">
+        <span class="nav-icon">🤝</span> Friends
+      </a>
+      <a href="{% url 'contact_list' %}?relationship=family" class="nav-link">
+        <span class="nav-icon">🏠</span> Family
+      </a>
+      <a href="{% url 'contact_list' %}?relationship=colleague" class="nav-link">
+        <span class="nav-icon">💼</span> Colleagues
+      </a>
+
+      <div class="nav-section-label" style="margin-top:16px">Organization</div>
+      <a href="{% url 'group_list' %}" class="nav-link {% block nav_groups %}{% endblock %}">
+        <span class="nav-icon">🏷️</span> Groups
+      </a>
+      <a href="{% url 'contact_create' %}" class="nav-link">
+        <span class="nav-icon">➕</span> Add Contact
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+        <a href="{% url 'contact_create' %}" class="btn btn-primary" style="width:100%;justify-content:center;">
+          ✦ New Contact
+        </a>
+        <a href="{% url 'logout' %}" class="btn btn-ghost" style="width:100%;justify-content:center;">
+          Logout
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <header class="topbar">
+      <button class="btn btn-ghost btn-icon" id="menuToggle" style="display:none">☰</button>
+      <form class="search-wrap" method="get" action="{% url 'contact_list' %}">
+        <span class="search-icon">🔍</span>
+        <input type="text" name="q" class="search-input" placeholder="Search contacts by name, email, phone…"
+          value="{{ request.GET.q }}" autocomplete="off">
+      </form>
+      <div class="topbar-actions">
+        <span class="user-pill" style="color: var(--text2); font-size: 13px; padding: 0 12px;">{{ user.username }}</span>
+        <a href="{% url 'contact_create' %}" class="btn btn-primary btn-sm">
+          ✦ Add Contact
+        </a>
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="messages-wrap">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {% if message.tags == 'success' %}✅{% else %}⚠️{% endif %}
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="page-content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<script>
+// Mobile menu toggle
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+}
+
+// Auto-dismiss messages
+setTimeout(() => {
+  document.querySelectorAll('.alert').forEach(el => {
+    el.style.transition = 'opacity .5s';
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 500);
+  });
+}, 4000);
+
+// Responsive menu button
+function checkWidth() {
+  if (window.innerWidth <= 900) {
+    menuToggle.style.display = 'flex';
+  } else {
+    menuToggle.style.display = 'none';
+    sidebar.classList.remove('open');
+  }
+}
+checkWidth();
+window.addEventListener('resize', checkWidth);
+</script>
+</body>
+</html>

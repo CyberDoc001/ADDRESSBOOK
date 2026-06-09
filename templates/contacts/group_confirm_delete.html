@@ -1,0 +1,20 @@
+{% extends 'contacts/base.html' %}
+{% block title %}Delete Group — AddressBook{% endblock %}
+
+{% block content %}
+<div class="confirm-card">
+  <div class="confirm-icon">🏷️</div>
+  <div class="confirm-title">Delete Group?</div>
+  <div class="confirm-desc">
+    Are you sure you want to delete the group <strong>"{{ group.name }}"</strong>?
+    Contacts in this group will not be deleted — they will just be unassigned.
+  </div>
+  <div class="confirm-actions">
+    <a href="{% url 'group_list' %}" class="btn btn-ghost">← Cancel</a>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

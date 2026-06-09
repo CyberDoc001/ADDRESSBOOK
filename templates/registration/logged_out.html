@@ -1,0 +1,11 @@
+{% extends 'contacts/base.html' %}
+
+{% block title %}Logged Out — AddressBook{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <h1>Logged out</h1>
+  <p class="auth-subtitle">You have successfully signed out.</p>
+  <a href="{% url 'login' %}" class="btn btn-primary">Login again</a>
+</div>
+{% endblock %}

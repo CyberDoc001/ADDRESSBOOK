@@ -1,0 +1,18 @@
+{% extends 'contacts/base.html' %}
+
+{% block title %}Login — AddressBook{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <h1>Login</h1>
+  <p class="auth-subtitle">Existing users can log in here.</p>
+  <form method="post" class="auth-form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="field-row">{{ form.username.label_tag }}{{ form.username }}</div>
+    <div class="field-row">{{ form.password.label_tag }}{{ form.password }}</div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+  <p class="auth-footer">New here? <a href="{% url 'register' %}">Create an account</a>.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends 'contacts/base.html' %}
+{% block title %}{{ title }} — AddressBook{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div style="display:flex;align-items:center;gap:12px">
+    {% if contact %}
+    <a href="{% url 'contact_detail' contact.pk %}" class="btn btn-ghost btn-sm">← Back</a>
+    {% else %}
+    <a href="{% url 'contact_list' %}" class="btn btn-ghost btn-sm">← Back</a>
+    {% endif %}
+    <h1 class="page-title" style="font-size:20px">{{ title }}</h1>
+  </div>
+</div>
+
+<form method="post" enctype="multipart/form-data" style="max-width:780px">
+{% csrf_token %}
+
+<!-- Photo Preview -->
+{% if contact and contact.photo %}
+<div class="photo-preview-wrap" style="margin-bottom:16px">
+  <img src="{{ contact.photo.url }}" class="photo-preview" alt="Current photo" id="photoPreview">
+  <div style="font-size:13px;color:var(--text3)">Current photo — upload a new one to replace it</div>
+</div>
+{% else %}
+<div class="photo-preview-wrap" style="margin-bottom:16px;display:none" id="previewWrap">
+  <img src="" class="photo-preview" alt="Preview" id="photoPreview">
+  <div style="font-size:13px;color:var(--text3)">Preview</div>
+</div>
+{% endif %}
+
+<!-- Basic Info -->
+<div class="form-card">
+  <div class="form-section-header">👤 Basic Information</div>
+  <div class="form-body">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">First Name *</label>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}<span class="error-text">{{ form.first_name.errors.0 }}</span>{% endif %}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        {{ form.last_name }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Relationship</label>
+        {{ form.relationship }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Group</label>
+        {{ form.group }}
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Profile Photo</label>
+        {{ form.photo }}
+      </div>
+      <div class="form-group form-full">
+        <div class="form-check">
+          {{ form.is_favorite }}
+          <label class="form-check-label" for="{{ form.is_favorite.id_for_label }}">⭐ Mark as Favorite</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Details -->
+<div class="form-card">
+  <div class="form-section-header">📞 Contact Details</div>
+  <div class="form-body">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Primary Phone</label>
+        {{ form.phone }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Secondary Phone</label>
+        {{ form.secondary_phone }}
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Email Address</label>
+        {{ form.email }}
+        {% if form.email.errors %}<span class="error-text">{{ form.email.errors.0 }}</span>{% endif %}
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label">Website</label>
+        {{ form.website }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Address -->
+<div class="form-card">
+  <div class="form-section-header">📍 Address</div>
+  <div class="form-body">
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label class="form-label">Street Address</label>
+        {{ form.address }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">City</label>
+        {{ form.city }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">State / Province</label>
+        {{ form.state }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">ZIP / Postal Code</label>
+        {{ form.zip_code }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Country</label>
+        {{ form.country }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Work -->
+<div class="form-card">
+  <div class="form-section-header">💼 Work Information</div>
+  <div class="form-body">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Company</label>
+        {{ form.company }}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Job Title</label>
+        {{ form.job_title }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Personal -->
+<div class="form-card">
+  <div class="form-section-header">🎂 Personal</div>
+  <div class="form-body">
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Birthday</label>
+        {{ form.birthday }}
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:16px">
+      <label class="form-label">Notes</label>
+      {{ form.notes }}
+    </div>
+  </div>
+</div>
+
+<div class="form-actions" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;">
+  {% if contact %}
+  <a href="{% url 'contact_detail' contact.pk %}" class="btn btn-ghost">Cancel</a>
+  {% else %}
+  <a href="{% url 'contact_list' %}" class="btn btn-ghost">Cancel</a>
+  {% endif %}
+  <button type="submit" class="btn btn-primary">✦ {{ action }}</button>
+</div>
+
+</form>
+
+<script>
+// Photo preview
+document.querySelector('input[type=file]').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.getElementById('photoPreview').src = ev.target.result;
+      const wrap = document.getElementById('previewWrap');
+      if (wrap) wrap.style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+</script>
+{% endblock %}
