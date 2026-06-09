@@ -18,14 +18,13 @@
     <select class="filter-select" onchange="applySort(this.value)">
       <option value="name" {% if sort == 'name' %}selected{% endif %}>Sort: A–Z</option>
       <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Sort: Recent</option>
-      <option value="company" {% if sort == 'company' %}selected{% endif %}>Sort: Company</option>
     </select>
   </div>
 </div>
 
 <!-- FILTER CHIPS -->
 <div class="filters-bar">
-  <a href="{% url 'contact_list' %}" class="filter-chip {% if not current_group and not current_relationship and not show_favorites %}active{% endif %}">
+  <a href="{% url 'contact_list' %}" class="filter-chip {% if not current_group and not show_favorites %}active{% endif %}">
     All
   </a>
   <a href="{% url 'contact_list' %}?favorites=1" class="filter-chip {% if show_favorites %}active{% endif %}">

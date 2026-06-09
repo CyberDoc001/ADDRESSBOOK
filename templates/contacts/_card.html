@@ -22,12 +22,7 @@
     {% endif %}
     <div class="card-info">
       <div class="card-name">{{ contact.get_full_name }}</div>
-      <div class="card-role">
-        {% if contact.job_title and contact.company %}{{ contact.job_title }} · {{ contact.company }}
-        {% elif contact.job_title %}{{ contact.job_title }}
-        {% elif contact.company %}{{ contact.company }}
-        {% else %}&nbsp;{% endif %}
-      </div>
+      <div class="card-role">&nbsp;</div>
     </div>
     <button class="fav-btn {% if contact.is_favorite %}active{% endif %}"
       data-id="{{ contact.pk }}" title="Toggle favorite">
@@ -48,18 +43,18 @@
       <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px">{{ contact.email }}</span>
     </div>
     {% endif %}
-    {% if contact.city %}
+    {% if contact.state or contact.country %}
     <div class="card-contact-row">
       <span class="icon">📍</span>
-      <span>{{ contact.city }}{% if contact.country %}, {{ contact.country }}{% endif %}</span>
+      <span>
+        {% if contact.state %}{{ contact.state }}{% if contact.country %}, {% endif %}{% endif %}
+        {% if contact.country %}{{ contact.country }}{% endif %}
+      </span>
     </div>
     {% endif %}
   </div>
 
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
-    {% if contact.relationship %}
-    <span class="badge badge-{{ contact.relationship }}">{{ contact.get_relationship_display }}</span>
-    {% endif %}
     {% if contact.group %}
     <span class="badge badge-group" style="border-color:{{ contact.group.color }}40;color:{{ contact.group.color }}">
       {{ contact.group.name }}

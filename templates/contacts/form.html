@@ -44,10 +44,6 @@
         {{ form.last_name }}
       </div>
       <div class="form-group">
-        <label class="form-label">Relationship</label>
-        {{ form.relationship }}
-      </div>
-      <div class="form-group">
         <label class="form-label">Group</label>
         {{ form.group }}
       </div>
@@ -74,18 +70,10 @@
         <label class="form-label">Primary Phone</label>
         {{ form.phone }}
       </div>
-      <div class="form-group">
-        <label class="form-label">Secondary Phone</label>
-        {{ form.secondary_phone }}
-      </div>
       <div class="form-group form-full">
         <label class="form-label">Email Address</label>
         {{ form.email }}
         {% if form.email.errors %}<span class="error-text">{{ form.email.errors.0 }}</span>{% endif %}
-      </div>
-      <div class="form-group form-full">
-        <label class="form-label">Website</label>
-        {{ form.website }}
       </div>
     </div>
   </div>
@@ -93,58 +81,16 @@
 
 <!-- Address -->
 <div class="form-card">
-  <div class="form-section-header">📍 Address</div>
+  <div class="form-section-header">📍 Location</div>
   <div class="form-body">
     <div class="form-grid">
-      <div class="form-group form-full">
-        <label class="form-label">Street Address</label>
-        {{ form.address }}
-      </div>
-      <div class="form-group">
-        <label class="form-label">City</label>
-        {{ form.city }}
-      </div>
       <div class="form-group">
         <label class="form-label">State / Province</label>
         {{ form.state }}
       </div>
       <div class="form-group">
-        <label class="form-label">ZIP / Postal Code</label>
-        {{ form.zip_code }}
-      </div>
-      <div class="form-group">
         <label class="form-label">Country</label>
         {{ form.country }}
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Work -->
-<div class="form-card">
-  <div class="form-section-header">💼 Work Information</div>
-  <div class="form-body">
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">Company</label>
-        {{ form.company }}
-      </div>
-      <div class="form-group">
-        <label class="form-label">Job Title</label>
-        {{ form.job_title }}
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Personal -->
-<div class="form-card">
-  <div class="form-section-header">🎂 Personal</div>
-  <div class="form-body">
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">Birthday</label>
-        {{ form.birthday }}
       </div>
     </div>
     <div class="form-group" style="margin-top:16px">

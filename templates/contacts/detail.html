@@ -33,18 +33,7 @@
     </div>
 
     <div class="detail-name">{{ contact.get_full_name }}</div>
-    {% if contact.job_title or contact.company %}
-    <div class="detail-role">
-      {% if contact.job_title %}{{ contact.job_title }}{% endif %}
-      {% if contact.job_title and contact.company %} · {% endif %}
-      {% if contact.company %}{{ contact.company }}{% endif %}
-    </div>
-    {% endif %}
-
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px">
-      {% if contact.relationship %}
-      <span class="badge badge-{{ contact.relationship }}">{{ contact.get_relationship_display }}</span>
-      {% endif %}
       {% if contact.group %}
       <span class="badge badge-group" style="border-color:{{ contact.group.color }}40;color:{{ contact.group.color }}">
         {{ contact.group.name }}
@@ -71,7 +60,7 @@
   <!-- RIGHT DETAIL CARDS -->
   <div class="detail-cards">
     <!-- Contact Info -->
-    {% if contact.phone or contact.secondary_phone or contact.email or contact.website %}
+    {% if contact.phone or contact.email %}
     <div class="info-card">
       <div class="info-card-header">📞 Contact Information</div>
       {% if contact.phone %}
@@ -80,15 +69,6 @@
         <div>
           <div class="info-label">Primary Phone</div>
           <div class="info-value"><a href="tel:{{ contact.phone }}">{{ contact.phone }}</a></div>
-        </div>
-      </div>
-      {% endif %}
-      {% if contact.secondary_phone %}
-      <div class="info-row">
-        <span class="info-icon">📱</span>
-        <div>
-          <div class="info-label">Secondary Phone</div>
-          <div class="info-value"><a href="tel:{{ contact.secondary_phone }}">{{ contact.secondary_phone }}</a></div>
         </div>
       </div>
       {% endif %}
@@ -101,29 +81,19 @@
         </div>
       </div>
       {% endif %}
-      {% if contact.website %}
-      <div class="info-row">
-        <span class="info-icon">🌐</span>
-        <div>
-          <div class="info-label">Website</div>
-          <div class="info-value"><a href="{{ contact.website }}" target="_blank">{{ contact.website }}</a></div>
-        </div>
-      </div>
-      {% endif %}
     </div>
     {% endif %}
 
     <!-- Address -->
-    {% if contact.address or contact.city or contact.country %}
+    {% if contact.state or contact.country %}
     <div class="info-card">
-      <div class="info-card-header">📍 Address</div>
+      <div class="info-card-header">📍 Location</div>
       <div class="info-row">
         <span class="info-icon">🏠</span>
         <div>
           <div class="info-label">Location</div>
           <div class="info-value">
-            {% if contact.address %}{{ contact.address }}<br>{% endif %}
-            {% if contact.city %}{{ contact.city }}{% if contact.state %}, {{ contact.state }}{% endif %}{% if contact.zip_code %} {{ contact.zip_code }}{% endif %}<br>{% endif %}
+            {% if contact.state %}{{ contact.state }}{% if contact.country %}, {% endif %}{% endif %}
             {% if contact.country %}{{ contact.country }}{% endif %}
           </div>
         </div>
@@ -131,44 +101,7 @@
     </div>
     {% endif %}
 
-    <!-- Work -->
-    {% if contact.company or contact.job_title %}
-    <div class="info-card">
-      <div class="info-card-header">💼 Work</div>
-      {% if contact.company %}
-      <div class="info-row">
-        <span class="info-icon">🏢</span>
-        <div>
-          <div class="info-label">Company</div>
-          <div class="info-value">{{ contact.company }}</div>
-        </div>
-      </div>
-      {% endif %}
-      {% if contact.job_title %}
-      <div class="info-row">
-        <span class="info-icon">🎯</span>
-        <div>
-          <div class="info-label">Job Title</div>
-          <div class="info-value">{{ contact.job_title }}</div>
-        </div>
-      </div>
-      {% endif %}
-    </div>
-    {% endif %}
-
-    <!-- Personal -->
-    {% if contact.birthday %}
-    <div class="info-card">
-      <div class="info-card-header">🎂 Personal</div>
-      <div class="info-row">
-        <span class="info-icon">🎂</span>
-        <div>
-          <div class="info-label">Birthday</div>
-          <div class="info-value">{{ contact.birthday|date:"F d, Y" }}</div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
+    <!-- Notes -->
 
     <!-- Notes -->
     {% if contact.notes %}
