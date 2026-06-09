@@ -45,9 +45,10 @@
         <a href="{% url 'contact_create' %}" class="btn btn-primary" style="width:100%;justify-content:center;">
           ✦ New Contact
         </a>
-        <a href="{% url 'logout' %}" class="btn btn-ghost" style="width:100%;justify-content:center;">
-          Logout
-        </a>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-ghost" style="width:100%;justify-content:center;">Logout</button>
+        </form>
       </div>
     </div>
   </aside>
