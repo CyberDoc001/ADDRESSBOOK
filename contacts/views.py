@@ -36,7 +36,6 @@ def register(request):
 def contact_list(request):
     query = request.GET.get('q', '')
     group_id = request.GET.get('group', '')
-    relationship = request.GET.get('relationship', '')
     show_favorites = request.GET.get('favorites', '')
     sort = request.GET.get('sort', 'name')
 
@@ -48,15 +47,12 @@ def contact_list(request):
             Q(last_name__icontains=query) |
             Q(email__icontains=query) |
             Q(phone__icontains=query) |
-            Q(company__icontains=query) |
-            Q(city__icontains=query)
+            Q(state__icontains=query) |
+            Q(country__icontains=query)
         )
 
     if group_id:
         contacts = contacts.filter(group_id=group_id)
-
-    if relationship:
-        contacts = contacts.filter(relationship=relationship)
 
     if show_favorites:
         contacts = contacts.filter(is_favorite=True)
@@ -65,8 +61,6 @@ def contact_list(request):
         contacts = contacts.order_by('first_name', 'last_name')
     elif sort == 'recent':
         contacts = contacts.order_by('-created_at')
-    elif sort == 'company':
-        contacts = contacts.order_by('company', 'first_name')
 
     groups = Group.objects.all()
     total = contacts.count()
@@ -86,7 +80,6 @@ def contact_list(request):
         'total': total,
         'query': query,
         'current_group': group_id,
-        'current_relationship': relationship,
         'show_favorites': show_favorites,
         'sort': sort,
         'search_form': SearchForm(initial={'q': query}),

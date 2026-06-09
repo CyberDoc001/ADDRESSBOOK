@@ -30,15 +30,6 @@
       <a href="{% url 'contact_list' %}?favorites=1" class="nav-link {% block nav_fav %}{% endblock %}">
         <span class="nav-icon">⭐</span> Favorites
       </a>
-      <a href="{% url 'contact_list' %}?relationship=friend" class="nav-link">
-        <span class="nav-icon">🤝</span> Friends
-      </a>
-      <a href="{% url 'contact_list' %}?relationship=family" class="nav-link">
-        <span class="nav-icon">🏠</span> Family
-      </a>
-      <a href="{% url 'contact_list' %}?relationship=colleague" class="nav-link">
-        <span class="nav-icon">💼</span> Colleagues
-      </a>
 
       <div class="nav-section-label" style="margin-top:16px">Organization</div>
       <a href="{% url 'group_list' %}" class="nav-link {% block nav_groups %}{% endblock %}">

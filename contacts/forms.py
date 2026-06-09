@@ -5,7 +5,7 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = [
-            'first_name', 'last_name', 'email', 'phone', 'state', 'country'
+            'first_name', 'last_name', 'email', 'phone', 'state', 'country', 'notes', 'photo', 'group', 'is_favorite'
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}),
@@ -14,6 +14,10 @@ class ContactForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+1 (555) 000-0000'}),
             'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'State / Province'}),
             'country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Country'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Add notes...'}),
+            'photo': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'group': forms.Select(attrs={'class': 'form-control'}),
+            'is_favorite': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 class GroupForm(forms.ModelForm):
